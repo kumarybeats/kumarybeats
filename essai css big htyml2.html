@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio Musical</title>
+  <style>
+    /* --- styles globaux --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .banner {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      overflow: hidden;
+    }
+
+    .banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .banner-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .banner-text h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .banner-text p {
+      font-size: 1.2rem;
+    }
+
+    nav {
+      background-color: #1a1a2e;
+      padding: 15px 0;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      color: #f0f0f0;
+      text-decoration: none;
+      margin: 0 25px;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #c77dff;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: #7209b7;
+      border-bottom: 2px solid #7209b7;
+      padding-bottom: 8px;
+      margin-bottom: 30px;
+    }
+
+    details {
+      background-color: #f0ebff;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    summary {
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #1a1a1a;
+      outline: none;
+    }
+
+    summary::marker {
+      color: #7209b7;
+    }
+
+    .audio-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+      flex-direction: column;
+    }
+
+    audio {
+      width: 250px;
+      height: 25px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #f0ebff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    #contact {
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 500px;
+      margin: 20px auto 0 auto;
+    }
+
+    input, textarea {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background-color: #e6e6f0;
+      color: #1a1a1a;
+      font-size: 1rem;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #666;
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      background-color: #7209b7;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #560bad;
+    }
+
+    #about {
+      max-width: 700px;
+      margin: 40px auto 60px auto;
+      background-color: #f0ebff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    /* --- MODIF: Collaborations avec artistes audio en ligne --- */
+    #bo details[open] > div.collab-audio-list {
+      display: flex;
+      gap: 15px;
+      flex-wrap: nowrap;
+      margin-top: 15px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #bo audio.collab-audio {
+      width: 180px; /* largeur réduite pour tenir en ligne */
+      height: 25px;
+    }
+
+    /* --- MODIF: Carrousel photos --- */
+    #gallery-carousel {
+      position: relative;
+      max-width: 700px;
+      margin: 40px auto 60px auto;
+      background-color: #f0ebff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #gallery-carousel img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      display: none; /* toutes les images cachées par défaut */
+    }
+
+    #gallery-carousel img.active {
+      display: block; /* seule image active visible */
+    }
+
+    #gallery-carousel button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(114, 9, 183, 0.7);
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    #gallery-carousel button#prev {
+      left: 10px;
+    }
+
+    #gallery-carousel button#next {
+      right: 10px;
+    }
+
+    /* --- ICÔNES RÉSEAUX SOCIAUX --- */
+    #social-media {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    #social-media a {
+      margin: 0 15px;
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+
+    #social-media a:hover {
+      transform: scale(1.1);
+    }
+
+    #social-media img {
+      width: 40px;
+      height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BANNIÈRE -->
+  <div class="banner">
+    <img src="images/banner.jpg" alt="Bannière musicale" />
+    <div class="banner-text">
+      <h1>Mon Portfolio Musical</h1>
+      <p>Compositions, Productions, Bandes Originales</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="#about">À propos</a>
+    <a href="#productions">Productions</a>
+    <a href="#bo">Bandes Originales</a>
+    <a href="#gallery-carousel">Galerie Photos</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="about">
+    <h2>À propos de moi</h2>
+    <p>
+      Salut ! Je suis compositeur, passionné par la musique à l'image, et j'adore créer des bandes sonores qui subliment les émotions des films et des jeux vidéo. 
+      Je collabore également avec des artistes pour enrichir leurs projets musicaux.  
+      Ce portfolio présente mes différentes productions et bandes originales.  
+      N'hésite pas à me contacter pour toute collaboration ou projet musical !
+    </p>
+  </section>
+
+  <section id="productions">
+    <h2>Productions</h2>
+
+    <details>
+      <summary>Productions</summary>
+      <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+        <details><summary>Afro</summary>
+          <div class="audio-list">
+            <audio controls src="audio/afro1.mp3"></audio>
+            <audio controls src="audio/afro2.mp3"></audio>
+            <audio controls src="audio/afro3.mp3"></audio>
+          </div>
+        </details>
+
+        <details><summary>Collaboration</summary>
+          <div class="audio-list">
+            <audio controls src="audio/collab1a.mp3"></audio>
+            <audio controls src="audio/collab1b.mp3"></audio>
+            <audio controls src="audio/collab2a.mp3"></audio>
+            <audio controls src="audio/collab2b.mp3"></audio>
+            <audio controls src="audio/collab3.mp3"></audio>
+          </div>
+        </details>
+
+        <details><summary>Drill</summary>
+          <div class="audio-list">
+            <audio controls src="audio/drill1.mp3"></audio>
+            <audio controls src="audio/drill2.mp3"></audio>
+            <audio controls src="audio/drill3.mp3"></audio>
+          </div>
+        </details>
+
+        <details><summary>Latin</summary>
+          <div class="audio-list">
+            <audio controls src="audio/latin1.mp3"></audio>
+            <audio controls src="audio/latin2.mp3"></audio>
+            <audio controls src="audio/latin3.mp3"></audio>
+          </div>
+        </details>
+
+        <details><summary>Rnb</summary>
+          <div class="audio-list">
+            <audio controls src="audio/rnb1.mp3"></audio>
+            <audio controls src="audio/rnb2.mp3"></audio>
+            <audio controls src="audio/rnb3.mp3"></audio>
+          </div>
+        </details>
+
+        <details><summary>Trap</summary>
+          <div class="audio-list">
+            <audio controls src="audio/trap1.mp3"></audio>
+            <audio controls src="audio/trap2.mp3"></audio>
+            <audio controls src="audio/trap3.mp3"></audio>
+          </div>
+        </details>
+
+        <details><summary>Triste</summary>
+          <div class="audio-list">
+            <audio controls src="audio/triste1.mp3"></audio>
+            <audio controls src="audio/triste2.mp3"></audio>
+            <audio controls src="audio/triste3.mp3"></audio>
+          </div>
+        </details>
+
+      </div>
+    </details>
+
+  </section>
+
+  <section id="bo">
+    <h2>Bandes Originales</h2>
+
+    <details>
+      <summary>Films & Courts-métrages</summary>
+      <p style="margin-top: 10px; color: #333;">
+        Compositions créées sur mesure pour des projets cinématographiques.
+      </p>
+      <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+        <details>
+          <summary>Documentaire paranormal</summary>
+          <div class="audio-list">
+            <audio controls src="audio/paranormal1.mp3"></audio>
+            <audio controls src="audio/paranormal2.mp3"></audio>
+          </div>
+        </details>
+
+        <details>
+          <summary>Court-métrage : Toile de l'âme</summary>
+          <div class="audio-list">
+            <audio controls src="audio/toile1.mp3"></audio>
+            <audio controls src="audio/toile2.mp3"></audio>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details>
+      <summary>Collaborations avec artistes</summary>
+      <div class="collab-audio-list">
+        <audio class="collab-audio" controls src="audio/artiste1.mp3"></audio>
+        <audio class="collab-audio" controls src="audio/artiste2.mp3"></audio>
+        <audio class="collab-audio" controls src="audio/artiste3.mp3"></audio>
+        <audio class="collab-audio" controls src="audio/artiste4.mp3"></audio>
+      </div>
+    </details>
+
+  </section>
+
+  <section id="gallery-carousel">
+    <button id="prev" aria-label="Image précédente">&#9664;</button>
+    <button id="next" aria-label="Image suivante">&#9654;</button>
+
+    <img src="images/photo1.jpg" alt="Photo 1" class="active" />
+    <img src="images/photo2.jpg" alt="Photo 2" />
+    <img src="images/photo3.jpg" alt="Photo 3" />
+    <img src="images/photo4.jpg" alt="Photo 4" />
+    <img src="images/photo5.jpg" alt="Photo 5" />
+    <img src="images/photo6.jpg" alt="Photo 6" />
+    <img src="images/photo7.jpg" alt="Photo 7" />
+  </section>
+
+  <!-- ICÔNES TIKTOK & INSTAGRAM -->
+  <section id="social-media">
+    <a href="https://www.tiktok.com/@kumarybeats?_t=ZN-8y0KC9mEY4c&_r=1" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+      <img src="images/tiktok-icon.png" alt="TikTok" />
+    </a>
+    <a href="https://www.instagram.com/kumarybeats/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <img src="images/instagram-icon.png" alt="Instagram" />
+    </a>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <form action="#" method="post">
+      <input type="text" name="name" placeholder="Votre nom" required />
+      <input type="email" name="email" placeholder="Votre e-mail" required />
+      <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+  </section>
+
+  <script>
+    // Carrousel photo
+    const images = document.querySelectorAll('#gallery-carousel img');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    let currentIndex = 0;
+
+    function showImage(index) {
+      images.forEach((img, i) => {
+        img.classList.toggle('active', i === index);
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      showImage(currentIndex);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % images.length;
+      showImage(currentIndex);
+    });
+
+    // Afficher la première image au chargement
+    showImage(currentIndex);
+  </script>
+
+</body>
+</html>
